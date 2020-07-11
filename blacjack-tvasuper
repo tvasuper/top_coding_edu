@@ -1,0 +1,130 @@
+#blackjack
+#딜러와 1:1
+#카드는 무한대
+#배팅은 100 시작
+#1000 이 되면 올인
+#올인이 되거나 종료하고 싶을때 종료
+
+#초기자본
+money = 1000
+playerCards = []
+dealerCards = []
+
+#배팅
+def 배팅():
+    while True:
+        betting = int(input("배팅금액 입력 :"))
+        if betting > money :
+            print("보유자금보다 배팅금액이 더 높습니다.")
+        else :
+            if betting < 100 :
+                print("100 부터 배팅 가능합니다.")
+            else :
+                if betting % 10 > 0 :
+                    print("10 단위로 배팅 가능합니다.")
+                else :
+                    break
+    return betting
+betting=배팅()
+#카드받기
+#1~10중에 하나 뽑기
+import random
+def 카드받기():
+    for i in range(2):
+        card = random.randrange(1,11)
+        playerCards.append(card)
+        card = random.randrange(1,11)
+        dealerCards.append(card)
+    print("보유중인 카드 : ",playerCards)
+    print("딜러카드 한장 오픈 : ",dealerCards[0])
+
+카드받기()
+
+#player card 받기
+def 카드받기결정():
+    while True:
+        receive = input("카드를 받으시겠습니까?(y/n) :")
+        if receive == "y":
+            card = random.randrange(1,11)
+            playerCards.append(card)
+            print("보유중인 카드 : ",playerCards)
+            #21을 넘었을 경우
+            sumPlayerCards = sum(playerCards)
+            if sumPlayerCards > 21:
+                print("플레이어의 카드가 21을 초과하였습니다(버스트)")
+                break
+        elif receive == "n":
+            break
+    print("보유중인 카드 : ",playerCards)
+    print("딜러카드 오픈 : ",dealerCards)
+    return sumPlayerCards    
+
+카드받기결정()
+
+#dealer card 받기
+#딜러는 17 이상까지 계속 받는다
+def 딜러카드받기():
+    sumDealerCards = sum(dealerCards)
+    while sumDealerCards < 17 :
+        card = random.randrange(1,11)
+        dealerCards.append(card)
+        print("딜러의 카드 : ",dealerCards)
+        sumDealerCards = sum(dealerCards)
+        if sumDealerCards > 21:
+            print("딜러의 카드가 21을 초과하였습니다")
+            break
+    print("딜러의 카드 : ",dealerCards)
+    return sumDealerCards
+
+딜러카드받기()
+
+#총 계산
+def 결과(sumPlayerCards , sumDealerCards):
+    if 1 in playerCards and sumPlayerCards < 12:
+        sumPlayerCards = sumPlayerCards + 10
+
+    print("플레이어 카드 총합:", sumPlayerCards)
+    print("딜    러 카드 총합:", sumDealerCards)
+if 1 in dealerCards and sumDealerCards < 12:
+    sumDealerCards = sumDealerCards + 10
+
+sumDealerCards = sum(dealerCards)
+
+if sumDealerCards > 21 or sumDealerCards > 21:
+    if sumDealerCards > 21 and sumPlayerCards > 21:
+        print("두분 다 21을 초과하였습니다.")
+        print("비기셨습니다.")
+else :
+    if sumPlayerCards > 21 :
+        print("카드의 합이 21을 초과했습니다")
+        print("버스트로 탈락하셨습니다.") 
+    if sumDealerCards > 21 :
+        print("딜러의 카드의 합이 21 보다 높습니다.")
+        print("승리하셨습니다.")
+        
+if sumDealerCards < 22 and sumPlayerCards < 22:
+    if sumDealerCards == sumPlayerCards:
+        print("딜러와 당신의 카드의 합이 같습니다.")
+        print("비기셨습니다.")
+    if sumDealerCards > sumPlayerCards:
+        print("딜러의 카드의 합이 더 높습니다.")
+        print("탈락하셨습니다.")
+    if sumDealerCards < sumPlayerCards:
+        print("당신의 카드의 합이 더 높습니다.")
+        print("승리하셨습니다.")
+
+#함수 사용하기
+def 게임():
+    while True:
+        playerCards = []
+        dealerCards = []
+        if money <= 0:
+            print("배팅금액이 없습니다")
+            break
+        betting=배팅()
+        카드받기()
+        플레이어_카드_총합=카드받기결정()
+        딜러_카드_총합=딜러카드받기()
+        결과(플레이어_카드_총합, 딜러_카드_총합)
+
+게임()
